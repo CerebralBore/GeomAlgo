@@ -380,6 +380,7 @@ void display(void)
 
 int main(int argc, char **argv)  
 {
+	//TP 2
 	if(argc > 3)
 	{
 		printf("trop d\'arguments.\n") ;
