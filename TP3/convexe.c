@@ -63,26 +63,29 @@ void cubinit()
 
             for(k = 0; k < nbPoints; k++)
             {
-                puiss = puissance(&P[i], &P[j], &P[k]) ;
-                if(puiss == ALIGNE)
+                if(k != i && k != j)
                 {
-                    if(!cestDansLaBoite(&P[i], &P[j], &P[k]))
+                    puiss = puissance(&P[i], &P[j], &P[k]) ;
+                    if(puiss == ALIGNE)
                     {
-                        unCote = FAUX ;
-                        break;
-                    }
-                }
-                else
-                {
-                    if(puissEnreg != puiss)
-                    {
-                        if(puissEnreg != ALIGNE)
+                        if(!cestDansLaBoite(&P[i], &P[j], &P[k]))
                         {
                             unCote = FAUX ;
                             break;
                         }
-                        else
-                            puissEnreg = puiss ;
+                    }
+                    else
+                    {
+                        if(puissEnreg != puiss)
+                        {
+                            if(puissEnreg != ALIGNE)
+                            {
+                                unCote = FAUX ;
+                                break;
+                            }
+                            else
+                                puissEnreg = puiss ;
+                        }
                     }
                 }
             }
@@ -96,7 +99,6 @@ void cubinit()
                 S[nbSegm].points[0] = i ;
                 S[nbSegm].points[1] = j ;
                 nbSegm++ ;
-                glutPostRedisplay() ;
             }
         }
     }
@@ -104,8 +106,30 @@ void cubinit()
 
 void display(void)
 {
+    int n = nbPoints ;
+
     glColor3f(0.0, 0.0, 0.0) ;
     glClear(GL_COLOR_BUFFER_BIT) ;
+
+    glBegin(GL_POINTS) ;
+    glColor3f(1.0, 1.0, 1.0) ;
+
+    while (--n >= 0)
+        glVertex2f(P[n].coords[0], P[n].coords[1]) ;
+
+    glEnd() ;
+    glFlush() ;
+
+    n = nbSegm ;
+    glBegin(GL_LINES) ;
+    glColor3f(0.0, 1.0, 0.0) ;
+    printf("nbSegm : %d\n", nbSegm) ;
+    while (--n >= 0)
+    {
+        glVertex2f(P[S[n].points[0]].coords[0], P[S[n].points[0]].coords[1]) ;
+        glVertex2f(P[S[n].points[1]].coords[0], P[S[n].points[1]].coords[1]) ;
+    }
+
     glEnd() ;
     glFlush() ;
 }
@@ -149,7 +173,6 @@ int main(int argc, char **argv)
 
     if(cubique)
         cubinit() ;
-    //glutMouseFunc(generation) ;
 
     glutDisplayFunc(display) ;
     glutMainLoop() ;
